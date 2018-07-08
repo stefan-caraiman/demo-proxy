@@ -12,7 +12,7 @@ env:
   - secure: bpaDZulE5LxE9ic0w/H1nV6Buv8OswDQw/I7KMhKqShX3h2Ys3BowzZnAs7ReJenPKaGiqdm86t8w9qewr9ISh/IK03QaOFL4WPznvZB4WhgXGIBRXgM8G5sJOdjBJAUy++GKLZquLHARNsMedvLA0uHKLwPCBgAFxzZubNCtFwnJ/x7sFUfuqEOCirZpZflyq2fOUXNopnS5bqzaMoErVFtgzwG3GGBNx7QgNQ1NAv3pnaQWCSbYuIdvoslUkK6NAPnUcIxP6HwaYDhEuadjlQGVjn5oFwVKHIJlfPPrW1gS21GnUTTAsDQo7rsTvn9rYL+dzBGIP4+g1eDSRaALH8xAfwM8aI7LGu2+4q02hBoa8DxTt4JwSwUB1phQuaGFDRtAvJ+0kiSTwqifcoIwPiszMhcwoGF3qmTvFWFqZSmIAZJvUSszEj5rAVZ88FVXFd3b0MGUGNZhjlh4aiojfHI+AWguQU50JieZY3lNvgSuwi+mahm+LXb3iG5wuo45BxF3A0+UBrg3tfp9aGQ1yp9L5auSgBdQfXz9LVqy+KMJaJybdQDe5eXJmV8oD8crm3tq30NlFNwZuW2nTDUgFr4FCo9dbyLhoE8FYZ04dS7N89selyGxQVEtEFO50fmD1KSQAQom5cvxihNcQhgZp+DY1MdG7hejjYkOKM/HvE=
 after_success:
 - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-- export REPO=stefan-caraiman/flask-app
+- export REPO=stefanccaraiman/flask-app
 - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH
   ; fi`
 - docker build -f Dockerfile -t $REPO:$COMMIT .
