@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-MAINTANER Stefan Caraiman "stefanc.caraiman@gmail.com"
+LABEL maintainer="stefanc.caraiman@gmail.com"
 
 RUN apt-get update -y && \
     apt-get install -y python-pip python-dev
