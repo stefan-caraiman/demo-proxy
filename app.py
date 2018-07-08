@@ -13,6 +13,6 @@ def proxied_content():
     return redirect("http://www.example.com", code=302)
 
 
-if __name == '__main__':
+if __name__ == '__main__':
     port = int(os.environ.get('PORT', 80))
     app.run(host='0.0.0.0', port=port)
