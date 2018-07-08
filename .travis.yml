@@ -1,6 +1,9 @@
 sudo: required
 services:
 - docker
+language: python
+python:
+  - 2.7
 env:
   global:
   - COMMIT=${TRAVIS_COMMIT::8}
