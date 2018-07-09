@@ -8,6 +8,11 @@ app = Flask(__name__)
 def hello_world():
     return 'Hey, we have Flask in a Docker container!'
 
+@app.route('/dummy')
+def hello_world():
+    return 'You just found a dummy path.'
+
+
 @app.route('/example-proxy')
 def proxied_content():
     return redirect("http://www.example.com", code=302)
