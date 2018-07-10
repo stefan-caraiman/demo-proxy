@@ -201,12 +201,13 @@ class DemoProxy(gunicorn.app.base.BaseApplication):
 
         LOG.info("Response received for %r %r (UUID: %s",
                  request.method, request.uri, request.uuid)
+        
         response_body = response.body.encode()
         response.headers["Content-Encoding"] = 'plain'
         response.headers["Content-Length"] = str(len(response_body))
         start_response(response.status, [(key, response.headers[key])
                                          for key in response.headers])
-        return response_body
+        return iter([response_body])
 
     def load_config(self):
         """The initial setup of the standalone application."""
@@ -270,7 +271,7 @@ class ProxyWorker(demo_proxy_worker.ConcurrentWorker):
             path=request.path,
             query=request.query,
             uuid=request.uuid,
-            body=response.content
+            body=response.content.decode()
         )
         self._task_queue.set_response(request, http_response)
 
