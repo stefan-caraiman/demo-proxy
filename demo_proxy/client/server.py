@@ -24,32 +24,38 @@ class _Start(cli.Command):
             "start",
             help="Start the Demo-Proxy standalone application.")
         parser.add_argument(
-            "--host", type=str, default="0.0.0.0",
+            "--host", type=str,
+            default=os.environ.get("PROXY_HOST", "0.0.0.0"),
             help="The IP address or the host name of the server. "
                  "Default: 0.0.0.0"
         )
         parser.add_argument(
-            "--port", type=int, default=8080,
+            "--port", type=int,
+            default=int(os.environ.get("PROXY_PORT", 8080)),
             help="The port that should be used by the current web service. "
                  "Default: 8080"
         )
         parser.add_argument(
-            "--workers", type=int, default=cpu_count,
+            "--workers", type=int,
+            default=int(os.environ.get("PROXY_WORKERS", cpu_count)),
             help="The number of thread workers used in order to serve "
                  "clients. Default: %s" % cpu_count
         )
         parser.add_argument(
-            "--redis-host", type=str, default="redis",
+            "--redis-host", type=str,
+            default=os.environ.get("PROXY_REDIS_HOST", "redis"),
             help="The IP address or the host name of the Redis Server. "
                  "Default: redis"
         )
         parser.add_argument(
-            "--redis-port", type=int, default=6379,
+            "--redis-port", type=int,
+            default=int(os.environ.get("PROXY_REDIS_PORT", 6379)),
             help="The port that should be used for connecting to the"
                  "Redis Database. Default: 6379"
         )
         parser.add_argument(
-            "--redis-database", type=int, default=0,
+            "--redis-database", type=int,
+            default=int(os.environ.get("PROXY_REDIS_DATABASE", 0)),
             help="The Redis database that should be used. Default: 0"
         )
         parser.set_defaults(work=self.run)
