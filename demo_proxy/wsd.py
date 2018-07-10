@@ -3,6 +3,7 @@ from __future__ import print_function
 
 import uuid
 import json
+import logging
 import time
 import threading
 
@@ -13,6 +14,10 @@ from gunicorn.six import iteritems
 import requests
 
 from demo_proxy.common import worker as demo_proxy_worker
+
+
+LOG = logging.getLogger(__name__)
+LOG.addHandler(logging.StreamHandler())
 
 
 class _HTTPHeaders(object):
@@ -177,6 +182,8 @@ class DemoProxy(gunicorn.app.base.BaseApplication):
         # Overwrite the Accept header in order to keep the headers small
         request.headers["Accept"] = "*/*"
 
+        LOG.info("Request %r %r ready for dispach (UUID: %s)",
+                 request.method, request.uri, request.uuid)
         self._queue.push(request)
         start = time.time()
         while True:
@@ -186,10 +193,14 @@ class DemoProxy(gunicorn.app.base.BaseApplication):
                 break
 
             if time.time() - start > self._timeout:
+                LOG.error("Request %s timeout.", request.uuid)
                 start_response('504 Gateway Timeout', [])
                 return [b'Something went wrong']
+
             time.sleep(self._delay)
 
+        LOG.info("Response received for %r %r (UUID: %s",
+                 request.method, request.uri, request.uuid)
         response_body = response.body.encode()
         response.headers["Content-Encoding"] = 'plain'
         response.headers["Content-Length"] = str(len(response_body))
@@ -245,6 +256,8 @@ class ProxyWorker(demo_proxy_worker.ConcurrentWorker):
             print("Invalid request received.")
             return
 
+        LOG.info("Request recived %r %r (UUID: %s)",
+                 request.method, request.uri, request.uuid)
         response = requests.request(request.method, "https://example.com")
         status_code = "%d %s" % (response.status_code,
                                  http_client.responses[response.status_code])

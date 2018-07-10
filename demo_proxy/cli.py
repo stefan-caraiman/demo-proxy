@@ -2,11 +2,15 @@
 Command line application base-classes:
     (Beginning of) the contract that commands and parsers must follow.
 """
-# pylint: disable=no-self-use, inconsistent-return-statements
+# pylint: disable=no-self-use, inconsistent-return-statements, unused-argument
 
 import abc
+import logging
 
 from demo_proxy.common import worker
+
+LOG = logging.getLogger(__name__)
+LOG.addHandler(logging.StreamHandler())
 
 
 class Command(worker.Worker):
@@ -57,14 +61,16 @@ class Command(worker.Worker):
 
     def task_done(self, result):
         """What to execute after successfully finished processing a task."""
-        pass
+        LOG.debug("Task done.")
 
     def task_fail(self, exc):
         """What to do when the program fails processing a task."""
+        LOG.error("Task failed: %s", exc)
         raise exc
 
     def interrupted(self):
         """What to execute when keyboard interrupts arrive."""
+        LOG.debug("KeyboardInterrupt received.")
         raise KeyboardInterrupt()
 
     @abc.abstractmethod
