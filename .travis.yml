@@ -18,9 +18,9 @@ after_success:
 - export REPO=stefanccaraiman/demo-proxy
 - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH
   ; fi`
-- docker build -f Dockerfile .
-- docker tag $REPO:$COMMIT $REPO:$TAG
-- docker push $REPO
+- docker build --pull --force-rm -f Dockerfile -t $REPO:latest .
+- docker push $REPO:latest
+
 
 install: pip install tox
 script:
