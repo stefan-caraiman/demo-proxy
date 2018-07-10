@@ -9,6 +9,8 @@ import threading
 import gunicorn.app.base
 from gunicorn.six import iteritems
 from six.moves import queue
+from six.moves import http_client
+import requests
 
 from demo_proxy.common import worker as demo_proxy_worker
 
@@ -46,6 +48,7 @@ class _HTTPHeaders(object):
         raw_headers = json.load(data)
         for key in raw_headers:
             headers[key.title()] = raw_headers[key]
+        return headers
 
     @classmethod
     def from_environ(cls, environ):
@@ -55,6 +58,14 @@ class _HTTPHeaders(object):
             if key.startswith("HTTP_"):
                 header = key.replace("HTTP_", "").replace("_", "-")
                 headers[header.title()] = environ[key]
+        return headers
+
+    @classmethod
+    def from_response(cls, http_response):
+        """Create a new object from the requests.response."""
+        headers = cls()
+        for key in http_response.headers:
+            headers[key] = http_response.headers[key]
         return headers
 
 
@@ -169,10 +180,8 @@ class DemoProxy(gunicorn.app.base.BaseApplication):
         self._queue.push(request)
         start = time.time()
         while True:
-            print("Waiting for response")
             raw_response = self._queue.pop(request)
             if raw_response:
-                print("Response received")
                 response = _HTTPResponse.from_json(raw_response)
                 break
 
@@ -181,8 +190,12 @@ class DemoProxy(gunicorn.app.base.BaseApplication):
                 return [b'Something went wrong']
             time.sleep(self._delay)
 
-        start_response(response.status, response.headers)
-        return [response.body.encode()]
+        response_body = response.body.encode()
+        response.headers["Content-Encoding"] = 'plain'
+        response.headers["Content-Length"] = str(len(response_body))
+        start_response(response.status, [(key, response.headers[key])
+                                         for key in response.headers])
+        return response_body
 
     def load_config(self):
         """The initial setup of the standalone application."""
@@ -231,6 +244,20 @@ class ProxyWorker(demo_proxy_worker.ConcurrentWorker):
         if not request:
             print("Invalid request received.")
             return
+
+        response = requests.request(request.method, "https://example.com")
+        status_code = "%d %s" % (response.status_code,
+                                 http_client.responses[response.status_code])
+
+        http_response = _HTTPResponse(method=request.method,
+                                      status=status_code,
+                                      headers=_HTTPHeaders.from_response(response),
+                                      uri=request.uri,
+                                      path=request.path,
+                                      query=request.query,
+                                      uuid=request.uuid,
+                                      body=response.content)
+        self._task_queue.set_response(request, http_response)
 
     def _start_worker(self):
         """Creates a new thread."""
