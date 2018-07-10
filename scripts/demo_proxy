@@ -1,0 +1,39 @@
+#!/usr/bin/env python
+"""DemoProxy entry point."""
+
+import argparse
+import sys
+
+from demo_proxy import cli
+from demo_proxy.client import server
+from demo_proxy.client import worker
+
+
+class DemoProxyClient(cli.Application):
+
+    """DemoProxyClient command line application."""
+
+    commands = [
+        (server.Server, "commands"),
+        (worker.Worker, "commands"),
+    ]
+
+    def setup(self):
+        """Extend the parser configuration in order to expose all
+        the received commands.
+        """
+        self._parser = argparse.ArgumentParser()
+        commands = self._parser.add_subparsers(
+            title="[commands]", dest="command")
+
+        self._register_parser("commands", commands)
+
+
+def main():
+    """Run the DemoProxy command line application."""
+    demo_proxy = DemoProxyClient(sys.argv[1:])
+    demo_proxy.run()
+
+
+if __name__ == "__main__":
+    main()

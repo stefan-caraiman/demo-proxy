@@ -1,20 +1,4 @@
-FROM ubuntu:16.04
-
-LABEL maintainer="stefanc.caraiman@gmail.com"
-
-RUN apt-get update -y && \
-    apt-get install -y python-pip python-dev
-
-COPY ./requirements.txt /app/requirements.txt
-
-WORKDIR /app
-
-RUN pip install -r requirements.txt
-
-COPY . /app
-
-EXPOSE 80
-
-ENTRYPOINT [ "python" ]
-
-CMD [ "app.py" ]
+FROM python:3.6-onbuild
+ADD . /usr/src/app/
+EXPOSE 8080
+RUN python setup.py install
