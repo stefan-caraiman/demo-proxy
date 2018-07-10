@@ -3,8 +3,8 @@ services:
   - docker
 language: python
 python:
-  - 2.7
-  - 3.5
+  - "2.7"
+  - "3.5"
 
 env:
   global:
@@ -18,9 +18,8 @@ after_success:
 - export REPO=stefanccaraiman/demo-proxy
 - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH
   ; fi`
-- docker build -f Dockerfile -t $REPO:$COMMIT .
+- docker build -f Dockerfile .
 - docker tag $REPO:$COMMIT $REPO:$TAG
-- docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
 - docker push $REPO
 
 install: pip install tox
