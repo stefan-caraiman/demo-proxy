@@ -23,23 +23,28 @@ class _Start(cli.Command):
         parser = self._parser.add_parser(
             "start",
             help="Start the demo_proxy web worker.")
+
         parser.add_argument(
-            "--workers", type=int, default=cpu_count,
+            "--workers", type=int,
+            default=int(os.environ.get("PROXY_WORKERS", cpu_count)),
             help="The number of thread workers used in order to serve "
                  "clients. Default: %s" % cpu_count
         )
         parser.add_argument(
-            "--redis-host", type=str, default="redis",
+            "--redis-host", type=str,
+            default=os.environ.get("PROXY_REDIS_HOST", "redis"),
             help="The IP address or the host name of the Redis Server. "
                  "Default: redis"
         )
         parser.add_argument(
-            "--redis-port", type=int, default=6379,
+            "--redis-port", type=int,
+            default=int(os.environ.get("PROXY_REDIS_PORT", 6379)),
             help="The port that should be used for connecting to the"
                  "Redis Database. Default: 6379"
         )
         parser.add_argument(
-            "--redis-database", type=int, default=0,
+            "--redis-database", type=int,
+            default=int(os.environ.get("PROXY_REDIS_DATABASE", 0)),
             help="The Redis database that should be used. Default: 0"
         )
         parser.set_defaults(work=self.run)
