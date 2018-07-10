@@ -1,4 +1,5 @@
 """Simple queue used for server-worker communication."""
+# pylint: disable=inconsistent-return-statements
 
 import abc
 

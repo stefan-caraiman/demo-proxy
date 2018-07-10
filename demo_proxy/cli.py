@@ -2,7 +2,7 @@
 Command line application base-classes:
     (Beginning of) the contract that commands and parsers must follow.
 """
-# pylint: disable=no-self-use
+# pylint: disable=no-self-use, inconsistent-return-statements
 
 import abc
 
@@ -239,5 +239,5 @@ class Application(Group, worker.Worker):
             self._parser.print_help()
             return
 
-        # pylint: disable not-callable
+        # pylint: disable=not-callable
         return work_function()

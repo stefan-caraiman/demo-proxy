@@ -5,10 +5,10 @@ import os
 import subprocess
 import time
 
-from demo_proxy.common import exception
-
 import six
 import redis
+
+from demo_proxy.common import exception
 
 ATTEMPTS = 3
 RETRY_INTERVAL = 0.1

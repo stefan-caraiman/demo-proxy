@@ -6,10 +6,10 @@ import json
 import time
 import threading
 
+from six.moves import http_client
+from six.moves import queue
 import gunicorn.app.base
 from gunicorn.six import iteritems
-from six.moves import queue
-from six.moves import http_client
 import requests
 
 from demo_proxy.common import worker as demo_proxy_worker
@@ -249,14 +249,16 @@ class ProxyWorker(demo_proxy_worker.ConcurrentWorker):
         status_code = "%d %s" % (response.status_code,
                                  http_client.responses[response.status_code])
 
-        http_response = _HTTPResponse(method=request.method,
-                                      status=status_code,
-                                      headers=_HTTPHeaders.from_response(response),
-                                      uri=request.uri,
-                                      path=request.path,
-                                      query=request.query,
-                                      uuid=request.uuid,
-                                      body=response.content)
+        http_response = _HTTPResponse(
+            method=request.method,
+            status=status_code,
+            headers=_HTTPHeaders.from_response(response),
+            uri=request.uri,
+            path=request.path,
+            query=request.query,
+            uuid=request.uuid,
+            body=response.content
+        )
         self._task_queue.set_response(request, http_response)
 
     def _start_worker(self):
