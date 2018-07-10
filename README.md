@@ -1,9 +1,5 @@
-# flask-app
+# Demo Python proxy webserver
 
-[![Build Status](https://travis-ci.org/stefan-caraiman/flask-app.svg?branch=master)](https://travis-ci.org/stefan-caraiman/flask-app)
+[![Build Status](https://travis-ci.org/stefan-caraiman/demo-proxy.svg?branch=master)](https://travis-ci.org/stefan-caraiman/demo-proxy)
 
-This is a dummy simple webserver which uses flask.
-
-Prerequisites for setting up this pipeline:
-
-* gem install travis
+This is a dummy simple proxy webserver writting in Python.
