@@ -9,7 +9,7 @@ except ImportError:
 
 setup(
     name="demo-proxy",
-    version="0.2.0",
+    version="0.2.1",
     description="A demo proxy",
     long_description=open("README.md").read(),
     author="Stefan Caraiman",
